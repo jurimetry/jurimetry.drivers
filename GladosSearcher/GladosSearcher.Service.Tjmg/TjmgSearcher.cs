@@ -14,6 +14,20 @@ namespace GladosSearcher.Service.Tjmg
 
         public void Crawle()
         {
+            var urls = GetMatterUrls();
+            foreach (var url in urls) 
+            {
+                var resultMatter = Navigate(url);
+                
+                if (string.IsNullOrEmpty(resultMatter))
+                    continue;
+
+
+            }
+        }
+
+        private List<string> GetMatterUrls()
+        {
 #if DEBUG
             var list = new List<string>()
             {
@@ -44,18 +58,30 @@ namespace GladosSearcher.Service.Tjmg
             var courts = parser.GetAllCourtDecisorsNames();
             var sessions = parser.GetAllCourtSessionsNames();
 #endif
-
-            foreach (var session in sessions) 
+            var listMatterUrls = new List<string>();
+            foreach (var session in sessions)
             {
                 foreach (var court in courts)
                 {
                     var resultListPage = NavigateToResultPage(session, court);
-                    Console.WriteLine($"{session} - {court} - {!resultListPage.Contains("Nenhum Espelho do Ac")}");
+#if DEBUG
+                    Console.WriteLine($"{session} - {court} - {!IsMatterResultPage(resultListPage)}");
+#endif
+                    if (IsMatterResultPage(resultListPage))
+                        continue;
+
+                    parser = new TjmgParser(resultListPage);
+                    listMatterUrls.AddRange(parser.GetUrlFromMatterList());
                 }
             }
+
+            return listMatterUrls;
         }
 
-        
+        private bool IsMatterResultPage(string resultListPage) 
+        {
+            return resultListPage.Contains("Nenhum Espelho do Ac") || resultListPage.Contains("Ocorreu um erro");
+        }
 
         private string NavigateToResultPage(string courtSessions, string courtDecisors) 
         {
@@ -67,8 +93,8 @@ namespace GladosSearcher.Service.Tjmg
 #region Parameters
         private const string pagesLimit = "linhasPorPagina=";
         private const string searchThearm = "palavras=";
-        private const string searchComplement = "pesquisarPor=ementa&orderByData=2";
-        private const string searchComplementFinal = "referenciaLegislativa=Clique%20na%20lupa%20para%20pesquisar%20as%20refer%EAncias%20cadastradas...&pesquisaPalavras=Pesquisar&";
+        private const string searchComplement = "pesquisarPor=acordao&orderByData=2";
+        private const string searchComplementFinal = "&classe=&codigoAssunto=&dataPublicacaoInicial=&dataPublicacaoFinal=&dataJulgamentoInicial=&dataJulgamentoFinal=&siglaLegislativa=&referenciaLegislativa=Clique+na+lupa+para+pesquisar+as+refer%EAncias+cadastradas...&numeroRefLegislativa=&anoRefLegislativa=&legislacao=&norma=&descNorma=&complemento_1=&listaPesquisa=&descricaoTextosLegais=&observacoes=";
 #endregion
 
         private const string thearm = "tutela";
@@ -78,15 +104,9 @@ namespace GladosSearcher.Service.Tjmg
             var courtSessionsPost = $"listaRelator={courtSessions}";
             var courtDecisorsPost = $"listaOrgaoJulgador={courtDecisors}";
 
-            var searchParameters = $"{pagesLimit}50&paginaNumero=1&{searchThearm}{thearm}";
-            searchParameters += $"{searchComplement}&{courtDecisorsPost}&{courtSessionsPost}{searchComplementFinal}";
-            //var searchParameters = $"{baseSearchPost}{thearm}&{complementSearchPost}";
-            //searchParameters += $"&{courtSessionsPost}&codigoCompostoRelator=&{courtDecisorsPost}";
-            //searchParameters += $"&{complementPostFinal}&{pagesLimit}50&pesquisaPalavras=Pesquisar";
-
-            //var searchParameters = $"{pagesLimit}10&{pageNumber}&{searchThearm}{thearm}";
-            //searchParameters += $"&{searchComplement}&{courtSessionsPost}&{courtDecisorsPost}{searchComplement2}";
-
+            var searchParameters = $"numeroRegistro=1&totalLinhas=1&{searchThearm}{thearm}";
+            searchParameters += $"&{searchComplement}&codigoOrgaoJulgador=&{courtSessionsPost}&codigoCompostoRelator=&{courtDecisorsPost}{searchComplementFinal}";
+            searchParameters += $"&{searchComplementFinal}&{pagesLimit}50&pesquisaPalavras=Pesquisar";
 
             return searchParameters;
         }
