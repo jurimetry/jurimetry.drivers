@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladosSearcher", "GladosSearcher\GladosSearcher.csproj", "{EC35FCC6-35D4-4D1C-9272-47BA1A7787C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladosSearcher.Service.Tjmg", "GladosSearcher.Service.Tjmg\GladosSearcher.Service.Tjmg.csproj", "{4B58AAA5-0310-4603-B900-599A01A4E43F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC35FCC6-35D4-4D1C-9272-47BA1A7787C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC35FCC6-35D4-4D1C-9272-47BA1A7787C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC35FCC6-35D4-4D1C-9272-47BA1A7787C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC35FCC6-35D4-4D1C-9272-47BA1A7787C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B58AAA5-0310-4603-B900-599A01A4E43F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B58AAA5-0310-4603-B900-599A01A4E43F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B58AAA5-0310-4603-B900-599A01A4E43F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B58AAA5-0310-4603-B900-599A01A4E43F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B15165C2-08BA-43A8-AC1D-9410A3402802}
+	EndGlobalSection
+EndGlobal
