@@ -10,7 +10,9 @@ namespace GladosSearcher.Service.Tjmg
     public class TjmgSearcher
     {
         private readonly GorticLibCrawler libCrawler = new GorticLibCrawler();
-        private const string searchUlr = "https://www5.tjmg.jus.br/jurisprudencia/pesquisaPalavrasEspelhoAcordao.do";
+
+        private const string baseUrl = "https://www5.tjmg.jus.br/jurisprudencia";
+        private readonly string searchUlr = $"{baseUrl}/pesquisaPalavrasEspelhoAcordao.do";
 
         public void Crawle()
         {
@@ -101,11 +103,11 @@ namespace GladosSearcher.Service.Tjmg
 
         private string CreateParametersSearch(string courtSessions, string courtDecisors) 
         {
-            var courtSessionsPost = $"listaRelator={courtSessions}";
-            var courtDecisorsPost = $"listaOrgaoJulgador={courtDecisors}";
+            var courtSessionsPost = $"listaOrgaoJulgador={courtSessions}";
+            var courtDecisorsPost = $"listaRelator={courtDecisors}";
 
             var searchParameters = $"numeroRegistro=1&totalLinhas=1&{searchThearm}{thearm}";
-            searchParameters += $"&{searchComplement}&codigoOrgaoJulgador=&{courtSessionsPost}&codigoCompostoRelator=&{courtDecisorsPost}{searchComplementFinal}";
+            searchParameters += $"&{searchComplement}&codigoOrgaoJulgador=&{courtSessionsPost}&codigoCompostoRelator=&{courtDecisorsPost}";
             searchParameters += $"&{searchComplementFinal}&{pagesLimit}50&pesquisaPalavras=Pesquisar";
 
             return searchParameters;
@@ -115,6 +117,9 @@ namespace GladosSearcher.Service.Tjmg
 
         private string Navigate(string url) 
         {
+            if (!url.StartsWith(baseUrl))
+                url = $"{baseUrl}/{url.TrimStart('/')}";
+
             var parameters = new GorticLibParameters();
             parameters.Url = url;
             parameters.Timeout = 100000;

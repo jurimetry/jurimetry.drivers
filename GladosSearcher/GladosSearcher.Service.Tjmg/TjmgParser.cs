@@ -55,8 +55,9 @@ namespace GladosSearcher.Service.Tjmg
         public List<string> GetUrlFromMatterList() 
         {
             var nodes = _doc.DocumentNode.SelectNodes("//div[contains(@class, 'caixa_processo')]/a");
+            
             return nodes
-                    .Select(x => x.GetAttributeValue("@href", string.Empty))
+                    .Select(x => x.GetAttributeValue("href", string.Empty))
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
         }
