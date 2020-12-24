@@ -21,7 +21,7 @@ jobs:
           DOCKER_USER: ${{secrets.DOCKER_USER}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo ${{ secrets.DOCKER_USER }} | docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: docker build
         run: |
           docker build ./GladosSearcher -t aimvector/csharp:1.0.0
