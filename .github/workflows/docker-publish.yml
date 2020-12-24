@@ -16,7 +16,9 @@ jobs:
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: heroku container:login 
-    - name: Build and push
+    - name: build
+      run: docker build -t gladossearcher:latest .
+    - name: push
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: heroku container:push web -a ${{ secrets.HEROKU_NAME_DRIVER }}
