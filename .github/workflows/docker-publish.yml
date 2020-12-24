@@ -1,4 +1,4 @@
-name: Deploy
+name: Dicker Series Builds
 
 on:
   push:
@@ -16,12 +16,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: jurimetry/jurimetry.drivers@v1
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "drivers-jurimetry-data"
-          heroku_email: "rwspatin@gmail.com"
-          usedocker: true
+      - name: docker build
+        run: |
+          docker build ./GladosSearcher -t aimvector/csharp:1.0.0
         
         
 
