@@ -15,8 +15,6 @@ namespace GladosSearcher.Helper
 
             var sb = new StringBuilder();
 
-            // Se já for um nó de texto, concatena o próprio texto. 
-            // Se não for, concatenta os nós filhos, recursivamente.
             if (node.Name.Equals("#text"))
             {
                 node.AppendNodeText(sb);
