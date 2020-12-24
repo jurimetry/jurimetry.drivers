@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  push:
+    # Publish `main` as Docker `latest` image.
+    branches:
+      - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+
+jobs:
+  
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'build'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rwspatin/heroku-deploy@v3.7.8
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "drivers-jurimetry-data"
+          heroku_email: "rwspatin@gmail.com"
+          usedocker: true
+          
+        
+
+      
