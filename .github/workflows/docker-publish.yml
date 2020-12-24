@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: jurimetry/jurimetry.drivers
+      - uses: jurimetry/jurimetry.drivers@v1
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "drivers-jurimetry-data"
