@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: docker login
         env:
           DOCKER_USER: ${{secrets.DOCKER_USER}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: |
-          docker 
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: docker build
         run: |
           docker build ./GladosSearcher -t aimvector/csharp:1.0.0
