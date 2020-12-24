@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GladosSearcher.Messager\GladosSearcher.Messager.csproj" />
     <ProjectReference Include="..\GladosSearcher.Service.Tjmg\GladosSearcher.Service.Tjmg.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,10 @@
 ﻿using GladosSearcher.Domain;
+using GladosSearcher.Helper;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GladosSearcher.Service.Tjmg
 {
@@ -31,11 +33,16 @@ namespace GladosSearcher.Service.Tjmg
             return courtModel;
         }
 
-        private string GetMatterCourtSession() => GetStringByXpath(ConstructXpath("Órgão Julgador / Câmara"));
+        /// <summary>
+        /// The original therm in html is 'Órgão Julgador / Câmara'
+        /// </summary>
+        private string GetMatterCourtSession() => GetStringByXpath(ConstructXpath("o Julgador / C"));
 
         private string GetMatterCourtDecisor() => GetStringByXpath(ConstructXpath("Relator"));
 
-        private const string xpathClass = "//td[@class='corpo']//./div[@class='cabecalho']/following-sibling::div";
+        private const string xpathClass = "//td[@class='corpo']//./div[@class='cabecalho']/following-sibling::div/text()[1]";
+
+        private readonly Regex regexMatterClass = new Regex(@"");
         private string GetMatterClass() 
         {
             return GetStringByXpath(xpathClass);
@@ -49,7 +56,7 @@ namespace GladosSearcher.Service.Tjmg
 
             if (node == null) return string.Empty;
 
-            return node.InnerText;
+            return node.GetClearTextFromNode();
         }
 
         public List<string> GetUrlFromMatterList() 

@@ -1,4 +1,6 @@
-﻿using GorticLib;
+﻿using GladosSearcher.Domain;
+using GladosSearcher.Messager.Domain;
+using GorticLib;
 using GorticLib.RequestParameter;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,13 @@ namespace GladosSearcher.Service.Tjmg
 
         private const string baseUrl = "https://www5.tjmg.jus.br/jurisprudencia";
         private readonly string searchUlr = $"{baseUrl}/pesquisaPalavrasEspelhoAcordao.do";
+        private List<CourtJurisprudenceModel> courtJurisprudenceModels;
 
-        public void Crawle()
+        public IReadOnlyList<CourtJurisprudenceModel> CourtJurisprudences => courtJurisprudenceModels;
+
+        public void Crawle(ScheduleJurimetryModel message)
         {
+            courtJurisprudenceModels = new List<CourtJurisprudenceModel>();
             var urls = GetMatterUrls();
             foreach (var url in urls) 
             {
@@ -24,7 +30,10 @@ namespace GladosSearcher.Service.Tjmg
                 if (string.IsNullOrEmpty(resultMatter))
                     continue;
 
+                var parser = new TjmgParser(resultMatter);
+                var result = parser.CreateModelByPage();
 
+                courtJurisprudenceModels.Add(result);
             }
         }
 
@@ -123,6 +132,7 @@ namespace GladosSearcher.Service.Tjmg
             var parameters = new GorticLibParameters();
             parameters.Url = url;
             parameters.Timeout = 100000;
+            parameters.Enconding = GorticLib.Helpers.RequestHelper.Enconding.ISO8859;
             libCrawler.GorticClientProperties.SetRequestParameters(parameters);
 
             var response = libCrawler.GorticClientProperties.MakeRequest();

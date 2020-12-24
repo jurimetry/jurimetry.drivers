@@ -1,4 +1,6 @@
-﻿using GladosSearcher.Service.Tjmg;
+﻿using GladosSearcher.Messager;
+using GladosSearcher.Messager.Domain;
+using GladosSearcher.Service.Tjmg;
 using System;
 
 namespace GladosSearcher
@@ -6,10 +8,13 @@ namespace GladosSearcher
     public class Program
     {
         private static readonly TjmgSearcher _tjmgSearcher = new TjmgSearcher();
-        static void Main(string[] args)
+        private static readonly Receiver receiver = new Receiver();
+
+        public static void Main(string[] args)
         {
-            _tjmgSearcher.Crawle();
-            Console.WriteLine("Hello World!");
+            Action<ScheduleJurimetryModel> tg = delegate (ScheduleJurimetryModel s) { _tjmgSearcher.Crawle(s); };
+
+            receiver.Execute("schedule-jurimetry", tg);
         }
     }
 }
