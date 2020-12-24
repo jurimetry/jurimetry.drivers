@@ -18,10 +18,10 @@ jobs:
       run: heroku container:login 
     - name: Build and push
       
-      run: heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
+      run: heroku container:push web -a ${{ secrets.HEROKU_NAME_DRIVER }}
     - name: Release
       
-      run: heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
+      run: heroku container:release web -a ${{ secrets.HEROKU_NAME_DRIVER }}
         
         
 
