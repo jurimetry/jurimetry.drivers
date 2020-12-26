@@ -5,7 +5,7 @@ using System;
 
 namespace GladosSearcher
 {
-    public class Program
+    public static class Program
     {
         private static readonly TjmgSearcher _tjmgSearcher = new TjmgSearcher();
         private static readonly Receiver receiver = new Receiver();

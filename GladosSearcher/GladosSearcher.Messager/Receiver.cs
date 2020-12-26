@@ -54,7 +54,7 @@ namespace GladosSearcher.Messager
 
                 Console.WriteLine("Waiting messages to proccess");
                 Console.WriteLine("Press some key to exit...");
-                Console.ReadKey();
+                Console.Read();
             }
         }
     }
