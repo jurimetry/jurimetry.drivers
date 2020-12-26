@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace GladosSearcher.Messager
 {
@@ -52,9 +53,11 @@ namespace GladosSearcher.Messager
                      autoAck: true,
                      consumer: consumer);
 
-                Console.WriteLine("Waiting messages to proccess");
-                Console.WriteLine("Press some key to exit...");
-                Console.Read();
+                while (true) 
+                {
+                    Thread.Sleep(100000);
+                    Console.WriteLine("Waiting messages to proccess");
+                }
             }
         }
     }
