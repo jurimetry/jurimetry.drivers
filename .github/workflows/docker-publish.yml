@@ -22,12 +22,14 @@ jobs:
     - name: push
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      #run: docker push registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web
-      run: heroku container:push web -a ${{ secrets.HEROKU_NAME_DRIVER }}
+      run: docker push registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web
+      #run: heroku container:push web -a ${{ secrets.HEROKU_NAME_DRIVER }}
     - name: Release
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release web -a ${{ secrets.HEROKU_NAME_DRIVER }}
+      run: docker release registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web
+      #run: heroku container:release web -a ${{ secrets.HEROKU_NAME_DRIVER }}
+      
         
         
 
