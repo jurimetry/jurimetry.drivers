@@ -17,11 +17,13 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: heroku container:login 
     - name: build and tag
-      run: |
-        docker build -t ${{ secrets.HEROKU_NAME_DRIVER }} ./GladosSearcher
-        | docker tag ${{ secrets.HEROKU_NAME_DRIVER }} registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web
+      run: docker build -t ${{ secrets.HEROKU_NAME_DRIVER }} ./GladosSearcher
       #run: docker build -t registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web ./GladosSearcher
       #run: docker build -t gladossearcher:latest ./GladosSearcher
+    - name: tag
+      env: 
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: docker tag ${{ secrets.HEROKU_NAME_DRIVER }} registry.heroku.com/${{ secrets.HEROKU_NAME_DRIVER }}/web
     - name: push
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
