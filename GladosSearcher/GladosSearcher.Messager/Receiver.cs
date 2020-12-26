@@ -55,8 +55,8 @@ namespace GladosSearcher.Messager
 
                 while (true) 
                 {
-                    Thread.Sleep(100000);
                     Console.WriteLine("Waiting messages to proccess");
+                    Thread.Sleep(10000);
                 }
             }
         }
