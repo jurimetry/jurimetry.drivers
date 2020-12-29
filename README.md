@@ -7,6 +7,8 @@ A crawler service that listen rabbitmq to make searches and send the result in r
       C# .Net Core
       Docker
       RabbitMq
+      Xpath
+      Regex
       
 ## Contribuitors
 * [Renan Winter](https://www.github.com/rwspatin)
