@@ -12,7 +12,7 @@ namespace GladosSearcher.Messager
     public class Receiver
     {
         private readonly ConnectionFactory connectionFactory;
-
+        
         public Receiver() 
         { 
             connectionFactory = new ConnectionFactory()

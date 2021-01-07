@@ -1,4 +1,5 @@
 ﻿using GladosSearcher.Domain;
+using GladosSearcher.Messager;
 using GladosSearcher.Messager.Domain;
 using GorticLib;
 using GorticLib.RequestParameter;
@@ -16,13 +17,14 @@ namespace GladosSearcher.Service.Tjmg
         private const string baseUrl = "https://www5.tjmg.jus.br/jurisprudencia";
         private readonly string searchUlr = $"{baseUrl}/pesquisaPalavrasEspelhoAcordao.do";
         private List<CourtJurisprudenceModel> courtJurisprudenceModels;
+        private readonly Producer producer = new Producer();
 
         public IReadOnlyList<CourtJurisprudenceModel> CourtJurisprudences => courtJurisprudenceModels;
 
-        public void Crawle(ScheduleJurimetryModel message)
+        public void Crawle(ScheduleJurimetryModel message = null)
         {
             courtJurisprudenceModels = new List<CourtJurisprudenceModel>();
-            var urls = GetMatterUrls();
+            var urls = GetMatterUrls(message);
             foreach (var url in urls) 
             {
                 var resultMatter = Navigate(url);
@@ -34,10 +36,13 @@ namespace GladosSearcher.Service.Tjmg
                 var result = parser.CreateModelByPage();
 
                 courtJurisprudenceModels.Add(result);
+
             }
+
+            producer.Publish(courtJurisprudenceModels);
         }
 
-        private List<string> GetMatterUrls()
+        private List<string> GetMatterUrls(ScheduleJurimetryModel message = null)
         {
 #if DEBUG
             var list = new List<string>()
@@ -74,7 +79,7 @@ namespace GladosSearcher.Service.Tjmg
             {
                 foreach (var court in courts)
                 {
-                    var resultListPage = NavigateToResultPage(session, court);
+                    var resultListPage = NavigateToResultPage(session, court, message);
 #if DEBUG
                     Console.WriteLine($"{session} - {court} - {!IsMatterResultPage(resultListPage)}");
 #endif
@@ -94,9 +99,9 @@ namespace GladosSearcher.Service.Tjmg
             return resultListPage.Contains("Nenhum Espelho do Ac") || resultListPage.Contains("Ocorreu um erro");
         }
 
-        private string NavigateToResultPage(string courtSessions, string courtDecisors) 
+        private string NavigateToResultPage(string courtSessions, string courtDecisors, ScheduleJurimetryModel message = null) 
         {
-            var url = $"{searchUlr}?{CreateParametersSearch(courtSessions, courtDecisors)}";
+            var url = $"{searchUlr}?{CreateParametersSearch(courtSessions, courtDecisors, message)}";
 
             return Navigate(url);
         }
@@ -105,21 +110,33 @@ namespace GladosSearcher.Service.Tjmg
         private const string pagesLimit = "linhasPorPagina=";
         private const string searchThearm = "palavras=";
         private const string searchComplement = "pesquisarPor=acordao&orderByData=2";
-        private const string searchComplementFinal = "&classe=&codigoAssunto=&dataPublicacaoInicial=&dataPublicacaoFinal=&dataJulgamentoInicial=&dataJulgamentoFinal=&siglaLegislativa=&referenciaLegislativa=Clique+na+lupa+para+pesquisar+as+refer%EAncias+cadastradas...&numeroRefLegislativa=&anoRefLegislativa=&legislacao=&norma=&descNorma=&complemento_1=&listaPesquisa=&descricaoTextosLegais=&observacoes=";
+        private const string searchComplementFinalPt1 = "classe=&codigoAssunto=&dataPublicacaoInicial=&dataPublicacaoFinal=";
+        private const string searchComplementFinalPt2 = "siglaLegislativa=&referenciaLegislativa=Clique+na+lupa+para+pesquisar+as+refer%EAncias+cadastradas...&numeroRefLegislativa=&anoRefLegislativa=&legislacao=&norma=&descNorma=&complemento_1=&listaPesquisa=&descricaoTextosLegais=&observacoes=";
 #endregion
 
         private const string thearm = "tutela";
 
-        private string CreateParametersSearch(string courtSessions, string courtDecisors) 
+        private string CreateParametersSearch(string courtSessions, string courtDecisors, ScheduleJurimetryModel message = null) 
         {
             var courtSessionsPost = $"listaOrgaoJulgador={courtSessions}";
             var courtDecisorsPost = $"listaRelator={courtDecisors}";
+            var searchLimitation = GetSearchLimitation(message);
 
             var searchParameters = $"numeroRegistro=1&totalLinhas=1&{searchThearm}{thearm}";
             searchParameters += $"&{searchComplement}&codigoOrgaoJulgador=&{courtSessionsPost}&codigoCompostoRelator=&{courtDecisorsPost}";
-            searchParameters += $"&{searchComplementFinal}&{pagesLimit}50&pesquisaPalavras=Pesquisar";
+            searchParameters += $"&{searchComplementFinalPt1}&{searchLimitation}&{searchComplementFinalPt2}&{pagesLimit}50&pesquisaPalavras=Pesquisar";
 
             return searchParameters;
+        }
+
+        private string GetSearchLimitation(ScheduleJurimetryModel message = null) 
+        {
+            if (message == null || message.RequiredDate == null || message.RequiredDate == default)
+                return "dataJulgamentoInicial=&dataJulgamentoFinal=";
+
+            var date = $"{message.RequiredDate.Date.Day.ToString().PadLeft(2)}%2F{message.RequiredDate.Date.Month.ToString().PadLeft(2)}%2F{message.RequiredDate.Date.Year.ToString()}";
+
+            return $"dataJulgamentoInicial={date}&dataJulgamentoFinal={date}";
         }
 
         private string NavigateToSearchPage() => Navigate(searchUlr);

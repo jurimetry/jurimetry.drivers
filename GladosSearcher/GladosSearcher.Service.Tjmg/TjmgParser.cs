@@ -29,9 +29,12 @@ namespace GladosSearcher.Service.Tjmg
             courtModel.CourtDecisor = GetMatterCourtDecisor();
             courtModel.CourtAbreviation = courtAbreviation;
             courtModel.CourtSession = GetMatterCourtSession();
+            courtModel.Decision = GetMatterDecision();
 
             return courtModel;
         }
+
+        private string GetMatterDecision() => GetStringByXpath(ConstructXpath("Ementa"));
 
         /// <summary>
         /// The original therm in html is 'Órgão Julgador / Câmara'

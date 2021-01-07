@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -13,6 +13,7 @@
     <ProjectReference Include="..\GladosSearcher.Domain\GladosSearcher.Domain.csproj" />
     <ProjectReference Include="..\GladosSearcher.Helper\GladosSearcher.Helper.csproj" />
     <ProjectReference Include="..\GladosSearcher.Messager.Domain\GladosSearcher.Messager.Domain.csproj" />
+    <ProjectReference Include="..\GladosSearcher.Messager\GladosSearcher.Messager.csproj" />
   </ItemGroup>
 
 </Project>
