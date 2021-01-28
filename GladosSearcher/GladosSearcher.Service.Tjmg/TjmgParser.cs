@@ -3,6 +3,7 @@ using GladosSearcher.Helper;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -10,16 +11,17 @@ namespace GladosSearcher.Service.Tjmg
 {
     public class TjmgParser
     {
-        private readonly static HtmlDocument _doc = new HtmlDocument();
+        #region Constantes
         private const string formValuesXpath = "//select[contains(@name, '{0}')]/option/@value";
         private const string courtAbreviation = "tjmg";
+        #endregion
 
+        private readonly static HtmlDocument _doc = new HtmlDocument();
+        
         public TjmgParser(string html)
         {
             _doc.LoadHtml(html);
         }
-
-        
 
         public CourtJurisprudenceModel CreateModelByPage() 
         {
@@ -29,12 +31,29 @@ namespace GladosSearcher.Service.Tjmg
             courtModel.CourtDecisor = GetMatterCourtDecisor();
             courtModel.CourtAbreviation = courtAbreviation;
             courtModel.CourtSession = GetMatterCourtSession();
-            courtModel.Decision = GetMatterDecision();
+            courtModel.CourtEntry = GetMatterEntry();
+            courtModel.CourtSumary = GetMatterSumary();
+            courtModel.AllJurisprudenceText = GetMatterAllText();
+            courtModel.DecisionDate = GetDecisionDate();
 
             return courtModel;
         }
 
-        private string GetMatterDecision() => GetStringByXpath(ConstructXpath("Ementa"));
+        
+        private DateTime GetDecisionDate() 
+        {
+            var decisionDate = GetMatterTextDecisionDate();
+
+            return StringUtils.ConvertStringToDateTime(decisionDate);
+        }
+
+        private string GetMatterTextDecisionDate() => GetStringByXpath(ConstructXpath("Data de Julgamento"));
+
+        private string GetMatterAllText() => GetStringByXpath("//td[@class='corpo']//./div[@class='cabecalho'][//*[contains(text(), 'Inteiro Teor')]]/following-sibling::div[@id='panel1']/div[contains(@style, 'justify')]");
+
+        private string GetMatterSumary() => GetStringByXpath(ConstructXpath("mula"));
+
+        private string GetMatterEntry() => GetStringByXpath(ConstructXpath("Ementa"));
 
         /// <summary>
         /// The original therm in html is 'Órgão Julgador / Câmara'
